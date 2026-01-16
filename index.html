@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Layal 🎂</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Quicksand:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Particle Background -->
+    <canvas id="particles"></canvas>
+    
+    <!-- Grid Background -->
+    <div class="grid-bg"></div>
+
+    <!-- Scene 0: Boot & Authentication -->
+    <section id="scene0" class="scene active">
+        <div class="boot-screen">
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                    <span class="terminal-title">BIRTHDAY_PROTOCOL_v1.0</span>
+                </div>
+                <div class="terminal-body">
+                    <div id="boot-log" class="log-content"></div>
+                </div>
+            </div>
+            <div id="auth-section" class="auth-section hidden">
+                <div class="scan-frame">
+                    <div class="scan-corner tl"></div>
+                    <div class="scan-corner tr"></div>
+                    <div class="scan-corner bl"></div>
+                    <div class="scan-corner br"></div>
+                    <video id="camera" autoplay playsinline></video>
+                    <canvas id="photo-canvas"></canvas>
+                    <img id="uploaded-photo" alt="Uploaded photo">
+                    <div class="scan-line"></div>
+                </div>
+                <p class="scan-text">Please look at the camera</p>
+                <p class="scan-tip">Tip: Smile 😊</p>
+                <div class="auth-buttons">
+                    <button id="camera-btn" class="cyber-btn">
+                        <span>📷 Use Camera</span>
+                    </button>
+                    <button id="upload-btn" class="cyber-btn">
+                        <span>📁 Upload Photo</span>
+                    </button>
+                    <input type="file" id="file-input" accept="image/*" hidden>
+                </div>
+                <div id="auth-result" class="auth-result hidden">
+                    <p class="glitch" data-text="Identity Confirmed: Layal">Identity Confirmed: Layal</p>
+                    <p class="access-granted">Access Granted ✓</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scene 1: Journey Begins -->
+    <section id="scene1" class="scene">
+        <div class="journey-content">
+            <div class="light-lines">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+            <h1 class="welcome-text">Welcome, Layal.</h1>
+            <p class="welcome-sub">Today is your day.</p>
+            <div class="timeline">
+                <div class="timeline-node active" data-label="Boot">
+                    <div class="node-glow"></div>
+                </div>
+                <div class="timeline-path"></div>
+                <div class="timeline-node" data-label="Message">
+                    <div class="node-glow"></div>
+                </div>
+                <div class="timeline-path"></div>
+                <div class="timeline-node" data-label="Heart">
+                    <div class="node-glow"></div>
+                </div>
+                <div class="timeline-path"></div>
+                <div class="timeline-node" data-label="Wish">
+                    <div class="node-glow"></div>
+                </div>
+                <div class="timeline-path"></div>
+                <div class="timeline-node" data-label="Queen">
+                    <div class="node-glow"></div>
+                </div>
+            </div>
+            <button id="continue-journey" class="cyber-btn glow">
+                <span>Begin Journey →</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Scene 2: Rahman's Message -->
+    <section id="scene2" class="scene">
+        <div class="message-content">
+            <div class="terminal message-terminal">
+                <div class="terminal-header">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                    <span class="terminal-title">HEARTFELT_MESSAGE.log</span>
+                </div>
+                <div class="terminal-body">
+                    <div id="message-log" class="log-content"></div>
+                </div>
+            </div>
+            <button id="continue-to-heart" class="cyber-btn glow hidden">
+                <span>Continue →</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Scene 3: Heart Equation -->
+    <section id="scene3" class="scene">
+        <div class="heart-content">
+            <h2 class="heart-intro">You like maths… so this one is for you.</h2>
+            <div class="heart-equation-container">
+                <h3 class="equation-title">The Heart Equation 💕</h3>
+                <p class="equation-text">(x² + y² - 1)³ - x²y³ = 0</p>
+                <p class="equation-description">
+                    Where algebra meets trigonometry, beauty emerges from mathematics.
+                    Watch as the variable <span class="highlight">h</span> shapes the heart.
+                </p>
+                <canvas id="heart-canvas"></canvas>
+                <div class="h-value">h = <span id="h-display">0</span></div>
+            </div>
+            <button id="continue-to-wish" class="cyber-btn glow">
+                <span>Make Your Wish →</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Scene 4: Make a Wish -->
+    <section id="scene4" class="scene">
+        <div class="wish-content">
+            <h2 class="wish-title">Make a Wish, Layal</h2>
+            <div class="cake-container">
+                <div class="cake">
+                    <div class="cake-top">
+                        <div class="candles">
+                            <div class="candle">
+                                <div class="flame"></div>
+                            </div>
+                            <div class="candle">
+                                <div class="flame"></div>
+                            </div>
+                            <div class="candle">
+                                <div class="flame"></div>
+                            </div>
+                            <div class="candle">
+                                <div class="flame"></div>
+                            </div>
+                            <div class="candle">
+                                <div class="flame"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cake-layer layer1"></div>
+                    <div class="cake-layer layer2"></div>
+                    <div class="cake-layer layer3"></div>
+                    <div class="cake-glow"></div>
+                </div>
+            </div>
+            <p class="wish-instruction">Close your eyes, make a wish, then...</p>
+            <button id="blow-btn" class="cyber-btn glow pulse">
+                <span>💨 Blow</span>
+            </button>
+        </div>
+        <div id="blow-particles"></div>
+    </section>
+
+    <!-- Scene 5: Finale -->
+    <section id="scene5" class="scene">
+        <div class="finale-content">
+            <div class="crown-container">
+                <div class="crown">👑</div>
+            </div>
+            <div class="queen-photo-frame">
+                <img id="queen-photo" src="" alt="Queen Layal">
+                <div class="frame-glow"></div>
+            </div>
+            <h1 class="finale-text">
+                <span class="crown-emoji">👑</span>
+                Happy Birthday, Queen Layal
+                <span class="crown-emoji">👑</span>
+            </h1>
+            <div class="hearts-float">
+                <span>💖</span>
+                <span>💕</span>
+                <span>💗</span>
+                <span>💝</span>
+                <span>💖</span>
+            </div>
+        </div>
+        <canvas id="confetti"></canvas>
+    </section>
+
+    <!-- Audio -->
+    <audio id="bg-music" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-dreaming-big-31.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="blow-sound">
+        <source src="https://assets.mixkit.co/active_storage/sfx/212/212-preview.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="celebration-sound">
+        <source src="https://assets.mixkit.co/active_storage/sfx/1978/1978-preview.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="sound-toggle" class="sound-btn">🔊</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
