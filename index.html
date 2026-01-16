@@ -118,16 +118,23 @@
     <!-- Scene 3: Heart Equation -->
     <section id="scene3" class="scene">
         <div class="heart-content">
-            <h2 class="heart-intro">You like maths… so this one is for you.</h2>
+            <h2 class="heart-intro">You like maths… so this one is especially for you.</h2>
             <div class="heart-equation-container">
-                <h3 class="equation-title">The Heart Equation 💕</h3>
-                <p class="equation-text">(x² + y² - 1)³ - x²y³ = 0</p>
-                <p class="equation-description">
-                    Where algebra meets trigonometry, beauty emerges from mathematics.
-                    Watch as the variable <span class="highlight">h</span> shapes the heart.
-                </p>
+                <h3 class="equation-title">The Living Heart Equation 💕</h3>
+                <p class="equation-text">f(x) = x<sup>2/3</sup> + (5 − x²)<sup>1/2</sup> · sin(h·π·x)</p>
+                <div class="equation-explanation" id="equation-explanation">
+                    <p class="explanation-line" data-delay="0">This equation blends structure and emotion.</p>
+                    <p class="explanation-line" data-delay="1">The term <span class="highlight">x<sup>2/3</sup></span> forms the core curve, giving the graph its soft, organic foundation.</p>
+                    <p class="explanation-line" data-delay="2">The term <span class="highlight">√(5−x²)</span> limits the shape, acting like a natural boundary — just as real hearts have limits.</p>
+                    <p class="explanation-line" data-delay="3">The sine component <span class="highlight">sin(hπx)</span> introduces rhythm and motion, like a heartbeat.</p>
+                    <p class="explanation-line" data-delay="4">The parameter <span class="highlight">h</span> controls the intensity of these oscillations.</p>
+                    <p class="explanation-line" data-delay="5">When h increases, the waves grow energetic and expressive.</p>
+                    <p class="explanation-line" data-delay="6">When h decreases, the motion softens and calms.</p>
+                    <p class="explanation-line" data-delay="7">Together, this creates a heart that doesn't just exist — <em>it lives</em>.</p>
+                </div>
                 <canvas id="heart-canvas"></canvas>
                 <div class="h-value">h = <span id="h-display">0</span></div>
+                <p class="emotional-overlay" id="emotional-overlay">Even equations can have a heartbeat.</p>
             </div>
             <button id="continue-to-wish" class="cyber-btn glow">
                 <span>Make Your Wish →</span>
@@ -200,7 +207,7 @@
         <canvas id="confetti"></canvas>
     </section>
 
-    <!-- Audio -->
+    <!-- Audio (disabled) -->
     <audio id="bg-music" loop>
         <source src="https://assets.mixkit.co/music/preview/mixkit-dreaming-big-31.mp3" type="audio/mpeg">
     </audio>
@@ -211,7 +218,7 @@
         <source src="https://assets.mixkit.co/active_storage/sfx/1978/1978-preview.mp3" type="audio/mpeg">
     </audio>
 
-    <button id="sound-toggle" class="sound-btn">🔊</button>
+    <button id="sound-toggle" class="sound-btn hidden">🔇</button>
 
     <script src="script.js"></script>
 </body>
