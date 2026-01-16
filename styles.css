@@ -538,6 +538,43 @@ body {
     margin-bottom: 20px;
 }
 
+.equation-text sup {
+    font-size: 0.8em;
+}
+
+.equation-explanation {
+    text-align: left;
+    margin: 20px auto 30px;
+    max-width: 700px;
+    padding: 0 20px;
+}
+
+.explanation-line {
+    color: var(--text-glow);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin-bottom: 10px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.explanation-line.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.explanation-line .highlight {
+    color: var(--pink-neon);
+    font-weight: bold;
+    text-shadow: 0 0 5px var(--pink-neon);
+}
+
+.explanation-line em {
+    color: var(--pink-soft);
+    font-style: italic;
+}
+
 .equation-description {
     color: var(--text-glow);
     font-size: 1rem;
@@ -558,7 +595,7 @@ body {
     display: block;
     border: 1px solid rgba(255, 20, 147, 0.3);
     border-radius: 8px;
-    background: rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(75, 0, 130, 0.5));
 }
 
 .h-value {
@@ -570,6 +607,22 @@ body {
 
 .h-value span {
     color: var(--pink-neon);
+}
+
+.emotional-overlay {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1rem;
+    color: var(--pink-soft);
+    margin-top: 20px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+    font-style: italic;
+}
+
+.emotional-overlay.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* ===== Scene 4: Make a Wish ===== */
@@ -868,6 +921,10 @@ body {
 
 .sound-btn.muted {
     opacity: 0.5;
+}
+
+.sound-btn.hidden {
+    display: none !important;
 }
 
 /* ===== Utility Classes ===== */

@@ -292,6 +292,32 @@ async function typeMessage() {
 }
 
 // ===== Scene 3: Heart Equation =====
+// Constants for heart animation
+const HEART_H_BASE = 2.25;        // Base h value
+const HEART_H_AMPLITUDE = 1.75;   // h oscillation amplitude (h ranges from 0.5 to 4)
+const HEART_BREATHING_SPEED = 0.5; // Speed of breathing animation
+const HEART_HUE_BASE = 330;       // Base hue for pink color
+const HEART_HUE_SHIFT = 20;       // Hue shift range
+const HEART_LIGHTNESS_BASE = 55;  // Base lightness percentage
+const HEART_LIGHTNESS_SHIFT = 10; // Lightness shift range
+
+function animateExplanationLines() {
+    const lines = document.querySelectorAll('.explanation-line');
+    lines.forEach((line, index) => {
+        setTimeout(() => {
+            line.classList.add('visible');
+        }, index * 800);
+    });
+    
+    // Show emotional overlay after explanations
+    setTimeout(() => {
+        const overlay = document.getElementById('emotional-overlay');
+        if (overlay) {
+            overlay.classList.add('visible');
+        }
+    }, lines.length * 800 + 1000);
+}
+
 function initHeartCanvas() {
     const canvas = elements.heartCanvas;
     const ctx = canvas.getContext('2d');
@@ -307,17 +333,55 @@ function initHeartCanvas() {
     const height = rect.height;
     const centerX = width / 2;
     const centerY = height / 2;
-    const scale = Math.min(width, height) / 5;
+    const scale = Math.min(width, height) / 6;
     
-    let h = 0;
-    let increasing = true;
+    let time = 0;
+    
+    // Function: f(x) = x^(2/3) + sqrt(5-x^2) * sin(h*pi*x)
+    function f(x, h) {
+        const coreCurve = Math.pow(Math.abs(x), 2/3);
+        const inner = 5 - x * x;
+        if (inner < 0) return null;
+        const oscillation = Math.sqrt(inner) * Math.sin(h * Math.PI * x);
+        return coreCurve + oscillation;
+    }
     
     function drawHeart() {
-        ctx.clearRect(0, 0, width, height);
+        // Clear canvas with gradient background
+        const bgGradient = ctx.createLinearGradient(0, 0, width, height);
+        bgGradient.addColorStop(0, 'rgba(0, 0, 0, 0.95)');
+        bgGradient.addColorStop(0.5, 'rgba(30, 0, 50, 0.95)');
+        bgGradient.addColorStop(1, 'rgba(75, 0, 130, 0.95)');
+        ctx.fillStyle = bgGradient;
+        ctx.fillRect(0, 0, width, height);
         
-        // Draw coordinate plane
-        ctx.strokeStyle = 'rgba(255, 20, 147, 0.2)';
-        ctx.lineWidth = 1;
+        // Calculate h using a breathing sinusoidal wave (0.5 to 4)
+        const h = HEART_H_BASE + HEART_H_AMPLITUDE * Math.sin(time * HEART_BREATHING_SPEED);
+        
+        // Draw grid lines with subtle pink glow
+        ctx.strokeStyle = 'rgba(255, 20, 147, 0.1)';
+        ctx.lineWidth = 0.5;
+        const gridSize = 20;
+        
+        for (let x = 0; x <= width; x += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, height);
+            ctx.stroke();
+        }
+        
+        for (let y = 0; y <= height; y += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(width, y);
+            ctx.stroke();
+        }
+        
+        // Draw glowing axes
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgba(255, 20, 147, 0.5)';
+        ctx.strokeStyle = 'rgba(255, 20, 147, 0.4)';
+        ctx.lineWidth = 2;
         
         // X axis
         ctx.beginPath();
@@ -331,69 +395,114 @@ function initHeartCanvas() {
         ctx.lineTo(centerX, height);
         ctx.stroke();
         
-        // Draw heart curve using parametric equations
-        ctx.beginPath();
-        ctx.strokeStyle = '#FF1493';
-        ctx.lineWidth = 2 + h;
-        ctx.shadowBlur = 15 + h * 5;
-        ctx.shadowColor = '#FF1493';
+        ctx.shadowBlur = 0;
         
-        for (let t = 0; t <= Math.PI * 2; t += 0.01) {
-            const x = 16 * Math.pow(Math.sin(t), 3);
-            const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+        // Calculate glow intensity based on h (more intense when h is higher)
+        const hMin = HEART_H_BASE - HEART_H_AMPLITUDE; // 0.5
+        const glowIntensity = 10 + (h - hMin) * 8;
+        const lineWidth = 2 + (h - hMin) * 0.5;
+        
+        // Create color gradient based on h (neon pink → rose → soft magenta)
+        const hRange = HEART_H_AMPLITUDE * 2; // 3.5
+        const hueShift = (h - hMin) / hRange;
+        const mainColor = `hsl(${HEART_HUE_BASE + hueShift * HEART_HUE_SHIFT}, 100%, ${HEART_LIGHTNESS_BASE + hueShift * HEART_LIGHTNESS_SHIFT}%)`;
+        
+        // Draw the heart curve (upper part: +sqrt, lower part: -sqrt for full heart shape)
+        // We need to draw both f(x) with + and - for the sqrt term
+        
+        // Draw upper curve
+        ctx.beginPath();
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = lineWidth;
+        ctx.shadowBlur = glowIntensity;
+        ctx.shadowColor = mainColor;
+        
+        const domain = Math.sqrt(5); // x from -sqrt(5) to sqrt(5)
+        let firstPoint = true;
+        
+        for (let px = 0; px <= width; px += 1) {
+            const x = (px - centerX) / scale;
+            if (Math.abs(x) > domain) continue;
             
-            const drawX = centerX + x * (scale / 16) * (0.5 + h * 0.5);
-            const drawY = centerY + y * (scale / 16) * (0.5 + h * 0.5);
+            const y = f(x, h);
+            if (y === null) continue;
             
-            if (t === 0) {
-                ctx.moveTo(drawX, drawY);
+            const drawY = centerY - y * scale;
+            
+            if (firstPoint) {
+                ctx.moveTo(px, drawY);
+                firstPoint = false;
             } else {
-                ctx.lineTo(drawX, drawY);
+                ctx.lineTo(px, drawY);
             }
         }
-        
-        ctx.closePath();
         ctx.stroke();
         
-        // Fill with gradient
-        const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, scale);
-        gradient.addColorStop(0, `rgba(255, 20, 147, ${0.3 + h * 0.3})`);
+        // Draw lower curve (mirrored for the -sqrt part of heart shape)
+        ctx.beginPath();
+        firstPoint = true;
+        
+        for (let px = 0; px <= width; px += 1) {
+            const x = (px - centerX) / scale;
+            if (Math.abs(x) > domain) continue;
+            
+            const inner = 5 - x * x;
+            if (inner < 0) continue;
+            
+            // Lower curve: x^(2/3) - sqrt(5-x^2) * sin(h*pi*x)
+            const term1 = Math.pow(Math.abs(x), 2/3);
+            const term2 = Math.sqrt(inner) * Math.sin(h * Math.PI * x);
+            const y = term1 - term2;
+            
+            const drawY = centerY - y * scale;
+            
+            if (firstPoint) {
+                ctx.moveTo(px, drawY);
+                firstPoint = false;
+            } else {
+                ctx.lineTo(px, drawY);
+            }
+        }
+        ctx.stroke();
+        
+        // Add glow fill effect
+        const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, scale * 2);
+        gradient.addColorStop(0, `rgba(255, 20, 147, ${0.1 + (h - 0.5) * 0.05})`);
+        gradient.addColorStop(0.5, `rgba(255, 105, 180, ${0.05 + (h - 0.5) * 0.03})`);
         gradient.addColorStop(1, 'rgba(255, 20, 147, 0)');
         ctx.fillStyle = gradient;
-        ctx.fill();
+        ctx.fillRect(0, 0, width, height);
         
-        // Add sparkles
-        if (h > 0.5) {
-            for (let i = 0; i < 5; i++) {
+        // Add sparkles when h is high
+        if (h > 2.5) {
+            const numSparkles = Math.floor((h - 2.5) * 5);
+            for (let i = 0; i < numSparkles; i++) {
                 const angle = Math.random() * Math.PI * 2;
-                const radius = scale * (0.8 + Math.random() * 0.4);
+                const radius = scale * (0.8 + Math.random() * 1.2);
                 const sparkleX = centerX + Math.cos(angle) * radius;
                 const sparkleY = centerY + Math.sin(angle) * radius;
                 
                 ctx.beginPath();
-                ctx.arc(sparkleX, sparkleY, 2, 0, Math.PI * 2);
-                ctx.fillStyle = '#FFB6C1';
+                ctx.arc(sparkleX, sparkleY, 2 + Math.random() * 2, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 182, 193, ${0.5 + Math.random() * 0.5})`;
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = '#FFB6C1';
                 ctx.fill();
             }
         }
         
-        // Update h value
-        if (increasing) {
-            h += 0.005;
-            if (h >= 1) {
-                increasing = false;
-            }
-        } else {
-            h -= 0.005;
-            if (h <= 0.2) {
-                increasing = true;
-            }
-        }
+        ctx.shadowBlur = 0;
         
+        // Update display
         elements.hDisplay.textContent = h.toFixed(2);
+        
+        time += 0.02;
         
         state.heartAnimationId = requestAnimationFrame(drawHeart);
     }
+    
+    // Start explanation animation
+    animateExplanationLines();
     
     drawHeart();
 }
