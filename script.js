@@ -6,6 +6,14 @@ const state = {
     heartAnimationId: null
 };
 
+// ===== Constants =====
+const DEFAULT_QUEEN_PHOTO = 'data:image/svg+xml,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">' +
+    '<rect fill="#FF1493" width="200" height="200"/>' +
+    '<text x="100" y="110" text-anchor="middle" fill="white" font-size="80">👸</text>' +
+    '</svg>'
+);
+
 // ===== DOM Elements =====
 const elements = {
     particles: document.getElementById('particles'),
@@ -31,7 +39,9 @@ const elements = {
     bgMusic: document.getElementById('bg-music'),
     blowSound: document.getElementById('blow-sound'),
     celebrationSound: document.getElementById('celebration-sound'),
-    soundToggle: document.getElementById('sound-toggle')
+    soundToggle: document.getElementById('sound-toggle'),
+    photoCanvas: document.getElementById('photo-canvas'),
+    blowParticles: document.getElementById('blow-particles')
 };
 
 // ===== Particle Background =====
@@ -226,7 +236,7 @@ async function completeAuthentication() {
 }
 
 function capturePhotoFromCamera() {
-    const canvas = document.getElementById('photo-canvas');
+    const canvas = elements.photoCanvas;
     const ctx = canvas.getContext('2d');
     canvas.width = elements.camera.videoWidth || 280;
     canvas.height = elements.camera.videoHeight || 280;
@@ -425,7 +435,7 @@ function blowCandles() {
 }
 
 function createBlowParticles() {
-    const container = document.getElementById('blow-particles');
+    const container = elements.blowParticles;
     const colors = ['#FFD700', '#FF6B00', '#FF1493', '#FFB6C1'];
     
     for (let i = 0; i < 30; i++) {
@@ -449,22 +459,6 @@ function createBlowParticles() {
     }
 }
 
-// Add particle animation
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes blowParticle {
-        0% {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-        }
-        100% {
-            transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
-
 // ===== Scene 5: Finale =====
 function initFinale() {
     // Set queen photo
@@ -472,7 +466,7 @@ function initFinale() {
         elements.queenPhoto.src = state.userPhoto;
     } else {
         // Default placeholder
-        elements.queenPhoto.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect fill="%23FF1493" width="200" height="200"/><text x="100" y="110" text-anchor="middle" fill="white" font-size="80">👸</text></svg>';
+        elements.queenPhoto.src = DEFAULT_QUEEN_PHOTO;
     }
     
     // Start confetti
